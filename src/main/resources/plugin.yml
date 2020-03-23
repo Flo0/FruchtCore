@@ -1,0 +1,7 @@
+name: FruchtCore
+version: ${project.version}
+main: com.gestankbratwurst.fruchtcore.FruchtCore
+api-version: 1.13
+authors: [Gestankbratwurst]
+description: Core plugin für FruchtLabor
+depend: [ProtocolLib]
