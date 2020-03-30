@@ -20,11 +20,11 @@ import org.jetbrains.annotations.Nullable;
  */
 public class UtilLoc {
 
-  public static String locToString(final Location location) throws UnsupportedEncodingException {
+  public static String locToString(final Location location) {
     return new String(toBytes(location));
   }
 
-  public static Location locFromString(final String locationString) throws UnsupportedEncodingException {
+  public static Location locFromString(final String locationString) {
     return fromBytes(locationString.getBytes());
   }
 

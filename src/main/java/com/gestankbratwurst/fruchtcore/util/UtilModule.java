@@ -4,6 +4,7 @@ import com.gestankbratwurst.fruchtcore.FruchtCore;
 import com.gestankbratwurst.fruchtcore.util.actionbar.ActionBarManager;
 import com.gestankbratwurst.fruchtcore.util.common.BukkitTime;
 import com.gestankbratwurst.fruchtcore.util.common.NameSpaceFactory;
+import com.gestankbratwurst.fruchtcore.util.common.UtilBlock;
 import com.gestankbratwurst.fruchtcore.util.common.UtilChunk;
 import com.gestankbratwurst.fruchtcore.util.common.UtilPlayer;
 import com.gestankbratwurst.fruchtcore.util.holograms.impl.HologramManager;
@@ -45,6 +46,7 @@ public class UtilModule {
     EntityTracker.init(plugin, plugin.getProtocolManager());
     UtilChunk.init(plugin);
     UtilPlayer.init(plugin);
+    UtilBlock.init(plugin);
     plugin.setDisplayCompiler(new ItemDisplayCompiler(plugin));
     plugin.getProtocolManager().addPacketListener(plugin.getDisplayCompiler());
     hologramManager = new HologramManager(plugin);
