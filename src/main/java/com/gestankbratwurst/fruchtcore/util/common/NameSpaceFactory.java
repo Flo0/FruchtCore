@@ -36,7 +36,6 @@ public class NameSpaceFactory {
   public static NamespacedKey provide(String key) {
     NamespacedKey nsk = instance.cachedKeys.get(key);
     if (nsk == null) {
-      Plugin plugin;
       nsk = new NamespacedKey(instance.plugin, key);
       instance.cachedKeys.put(key, nsk);
     }

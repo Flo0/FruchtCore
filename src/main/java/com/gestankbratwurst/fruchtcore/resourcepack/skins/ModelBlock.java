@@ -16,12 +16,13 @@ import org.bukkit.Material;
 @AllArgsConstructor
 public enum ModelBlock {
 
-  COPPER_ORE_BLOCK(Material.ORANGE_GLAZED_TERRACOTTA,"facing=north"),
-  TIN_ORE_BLOCK(Material.LIGHT_GRAY_GLAZED_TERRACOTTA,"facing=north"),
-  IRON_ORE_BLOCK(Material.RED_GLAZED_TERRACOTTA,"facing=north"),
-  TITAN_ORE_BLOCK(Material.GRAY_GLAZED_TERRACOTTA,"facing=north"),
-  SILVER_ORE_BLOCK(Material.WHITE_GLAZED_TERRACOTTA,"facing=north"),
-  STILLIT_ORE_BLOCK(Material.YELLOW_GLAZED_TERRACOTTA,"facing=north");
+  ;
+//  COPPER_ORE_BLOCK(Material.ORANGE_GLAZED_TERRACOTTA,"facing=north"),
+//  TIN_ORE_BLOCK(Material.LIGHT_GRAY_GLAZED_TERRACOTTA,"facing=north"),
+//  IRON_ORE_BLOCK(Material.RED_GLAZED_TERRACOTTA,"facing=north"),
+//  TITAN_ORE_BLOCK(Material.GRAY_GLAZED_TERRACOTTA,"facing=north"),
+//  SILVER_ORE_BLOCK(Material.WHITE_GLAZED_TERRACOTTA,"facing=north"),
+//  STILLIT_ORE_BLOCK(Material.YELLOW_GLAZED_TERRACOTTA,"facing=north");
 
   @Getter
   private final Material baseMaterial;

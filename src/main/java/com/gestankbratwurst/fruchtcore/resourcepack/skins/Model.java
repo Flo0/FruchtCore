@@ -24,7 +24,20 @@ import org.bukkit.inventory.meta.SkullMeta;
  */
 public enum Model {
 
-  BLACK_ARROW_UP(Material.STICK, 1000, ModelData.common(), FontMeta.common(), new BoxedFontChar(), false, false);
+  BLACK_ARROW_DOWN(Material.STICK, 1000, ModelData.common(), FontMeta.common(), new BoxedFontChar(), false, false),
+  BLACK_ARROW_LEFT(Material.STICK, 1001, ModelData.common(), FontMeta.common(), new BoxedFontChar(), false, false),
+  BLACK_ARROW_RIGHT(Material.STICK, 1002, ModelData.common(), FontMeta.common(), new BoxedFontChar(), false, false),
+  BLACK_ARROW_UP(Material.STICK, 1003, ModelData.common(), FontMeta.common(), new BoxedFontChar(), false, false),
+  GREEN_CHECK(Material.STICK, 1004, ModelData.common(), FontMeta.common(), new BoxedFontChar(), false, false),
+  RED_X(Material.STICK, 1005, ModelData.common(), FontMeta.common(), new BoxedFontChar(), false, false),
+  COINPILE_TINY(Material.STICK, 1100, ModelData.common(), FontMeta.common(), new BoxedFontChar(), false, true),
+  COINPILE_SMALL(Material.STICK, 1101, ModelData.common(), FontMeta.common(), new BoxedFontChar(), false, true),
+  COINPILE_MEDIUM(Material.STICK, 1102, ModelData.common(), FontMeta.common(), new BoxedFontChar(), false, true),
+  COINPILE_BIG(Material.STICK, 1103, ModelData.common(), FontMeta.common(), new BoxedFontChar(), false, true),
+  COINPILE_HUGE(Material.STICK, 1104, ModelData.common(), FontMeta.common(), new BoxedFontChar(), false, true),
+  COINPILE_BAR_SMALL(Material.STICK, 1105, ModelData.common(), FontMeta.common(), new BoxedFontChar(), false, true),
+  COINPILE_BAR_MEDIUM(Material.STICK, 1106, ModelData.common(), FontMeta.common(), new BoxedFontChar(), false, true),
+  COINPILE_BAR_BIG(Material.STICK, 1107, ModelData.common(), FontMeta.common(), new BoxedFontChar(), false, true);
 
   Model(final Material baseMaterial, final int modelID, final ModelData modelData, final FontMeta fontMeta,
       final BoxedFontChar boxedFontChar, final boolean headEnabled, final boolean customModelDataEnabled) {

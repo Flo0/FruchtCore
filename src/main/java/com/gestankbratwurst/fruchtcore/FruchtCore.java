@@ -3,6 +3,7 @@ package com.gestankbratwurst.fruchtcore;
 import co.aikar.commands.PaperCommandManager;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import com.gestankbratwurst.fruchtcore.recipes.RecipeModule;
 import com.gestankbratwurst.fruchtcore.resourcepack.ResourcepackModule;
 import com.gestankbratwurst.fruchtcore.tasks.TaskManager;
 import com.gestankbratwurst.fruchtcore.util.Msg;
@@ -32,6 +33,8 @@ public final class FruchtCore extends JavaPlugin {
   private UtilModule utilModule;
   @Getter
   private ResourcepackModule resourcepackModule;
+  @Getter
+  private RecipeModule recipeModule;
 
   @Override
   public void onEnable() {
@@ -43,6 +46,7 @@ public final class FruchtCore extends JavaPlugin {
     this.taskManager = new TaskManager(this);
     this.protocolManager = ProtocolLibrary.getProtocolManager();
     this.resourcepackModule = new ResourcepackModule();
+    this.recipeModule = new RecipeModule(this);
 
     utilModule.enable(this);
     resourcepackModule.enable(this);
