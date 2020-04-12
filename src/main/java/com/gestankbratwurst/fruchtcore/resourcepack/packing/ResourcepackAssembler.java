@@ -4,6 +4,7 @@ import com.gestankbratwurst.fruchtcore.FruchtCore;
 import com.gestankbratwurst.fruchtcore.resourcepack.skins.FontMeta;
 import com.gestankbratwurst.fruchtcore.resourcepack.skins.Model;
 import com.gestankbratwurst.fruchtcore.resourcepack.skins.ModelBlock;
+import com.gestankbratwurst.fruchtcore.resourcepack.skins.ModelData;
 import com.gestankbratwurst.fruchtcore.util.io.ResourceCopy;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
@@ -251,34 +252,40 @@ public class ResourcepackAssembler {
         providerArray.add(fontProvider);
         fontIndex++;
 
-        final JsonObject modelJson = new JsonObject();
-        modelJson.addProperty("parent", model.getModelData().getModelParent());
-        final JsonObject textureJson = new JsonObject();
-        textureJson.addProperty("layer0", nmsName + "/" + model.getModelID());
-        modelJson.add("textures", textureJson);
+        ModelData modelData = model.getModelData();
+        if (modelData != null) {
+          final JsonObject modelJson = new JsonObject();
+          modelJson.addProperty("parent", model.getModelData().getModelParent());
+          final JsonObject textureJson = new JsonObject();
+          textureJson.addProperty("layer0", nmsName + "/" + model.getModelID());
+          modelJson.add("textures", textureJson);
 
-        final JsonObject elementsJson = model.getModelData().getElementsJson();
-        if (elementsJson != null) {
-          modelJson.add("elements", elementsJson);
+          final JsonObject elementsJson = model.getModelData().getElementsJson();
+          if (elementsJson != null) {
+            modelJson.add("elements", elementsJson);
+          }
+
+          final JsonObject displayJson = model.getModelData().getDisplayJson();
+          if (displayJson != null) {
+            modelJson.add("display", displayJson);
+          }
+
+          final String data = gson.toJson(modelJson);
+          final OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(resourceModelFile));
+          osw.write(data);
+          osw.close();
         }
-
-        final JsonObject displayJson = model.getModelData().getDisplayJson();
-        if (displayJson != null) {
-          modelJson.add("display", displayJson);
-        }
-
-        final String data = gson.toJson(modelJson);
-        final OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(resourceModelFile));
-        osw.write(data);
-        osw.close();
       }
     }
 
     // Load custom models
     final File customtextureFolder = new File(texturesFolder + File.separator + "custom"); // minecraft/textures/custom
     final File tempCustomModelFolder = new File(tempFolder + File.separator + "custommodel"); // intern
+    final File rawTextureFolder = new File(tempFolder + File.separator + "raw"); // intern
     final File customTempModelFolder = new File(tempCustomModelFolder + File.separator + "models"); // intern
     final File customTempTextureFolder = new File(tempCustomModelFolder + File.separator + "textures"); // intern
+    // itemModelFolder
+
     // --- --- --- Copy all textures --- --- ---
     if (!customtextureFolder.exists()) {
       customtextureFolder.mkdirs();
@@ -296,6 +303,9 @@ public class ResourcepackAssembler {
         Model.valueOf(cModelFile.getName().replace(".json", ""));
         FileUtils.copyFile(cModelFile, new File(customModelFolder, cModelFile.getName().toLowerCase()));
       }
+    }
+    for (File raw : rawTextureFolder.listFiles()) {
+      FileUtils.copyFile(raw, new File(itemModelFolder, raw.getName().toLowerCase()));
     }
   }
 
@@ -320,7 +330,7 @@ public class ResourcepackAssembler {
       for (final Entry<String, JsonElement> entry : skinJson.entrySet()) {
         final Model model = Model.valueOf(entry.getKey());
         final Integer id = entry.getValue().getAsInt();
-        final ConsumingCallback callback = playerSkinManager.callback(skin -> model.setSkin(skin));
+        final ConsumingCallback callback = playerSkinManager.callback(model::setSkin);
         playerSkinManager.requestSkin(id, callback);
         while (callback.locked) {
           await(250);
@@ -376,6 +386,13 @@ public class ResourcepackAssembler {
     final File ttfFile = new File(tempFolder, "uniformcenter.ttf");
     FileUtils.copyFile(ttfFile, new File(fontFolder, "uniformcenter.ttf"));
 
+    File tempUnicodeFolder = new File(tempFolder + File.separator + "fontdata");
+    File unicodeFolder = new File(texturesFolder + File.separator + "font");
+    unicodeFolder.mkdirs();
+    for (File unicodeImage : tempUnicodeFolder.listFiles()) {
+      FileUtils.copyFile(unicodeImage, new File(unicodeFolder, unicodeImage.getName()));
+    }
+
     fontJson.add("providers", providerArray);
     final File fontFile = new File(fontFolder, "default.json");
     final OutputStreamWriter oswFont = new OutputStreamWriter(new FileOutputStream(fontFile), "UTF-8");
@@ -392,6 +409,10 @@ public class ResourcepackAssembler {
       final boolean isBlock = model.getBaseMaterial().isBlock();
       final JsonArray overrideArray;
       final JsonObject modelObject;
+
+      if (model.getModelData() == null) {
+        continue;
+      }
 
       if (!cachedJsons.containsKey(model.getBaseMaterial())) {
         modelObject = new JsonObject();
@@ -430,11 +451,13 @@ public class ResourcepackAssembler {
     }
 
     for (final Model model : Model.values()) {
-      final File modelFolder = model.getBaseMaterial().isBlock() ? blockModelFolder : itemModelFolder;
-      final File modelFile = new File(modelFolder, model.getBaseMaterial().getKey().getKey() + ".json");
-      final OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(modelFile));
-      osw.write(gson.toJson(cachedJsons.get(model.getBaseMaterial())));
-      osw.close();
+      if (model.getModelData() != null) {
+        final File modelFolder = model.getBaseMaterial().isBlock() ? blockModelFolder : itemModelFolder;
+        final File modelFile = new File(modelFolder, model.getBaseMaterial().getKey().getKey() + ".json");
+        final OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(modelFile));
+        osw.write(gson.toJson(cachedJsons.get(model.getBaseMaterial())));
+        osw.close();
+      }
     }
   }
 
@@ -444,7 +467,6 @@ public class ResourcepackAssembler {
     for (final File folder : packFolderSet) {
       folder.mkdirs();
     }
-    createMetaFile();
   }
 
 

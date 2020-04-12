@@ -13,6 +13,16 @@ import java.util.UUID;
  */
 public class UtilText {
 
+  private static final int UNICODE_START = 36864;
+
+  public static int getUnicode(int page, int row, int column) {
+    return UNICODE_START + (((page - 90) * 256) + (row * 16) + column);
+  }
+
+  public static char getUnicodeChar(int page, int row, int column) {
+    return (char)(UNICODE_START + (((page - 90) * 256) + (row * 16) + column));
+  }
+
   public static String unicodeEscaped(final char ch) {
     if (ch < 0x10) {
       return "\\u000" + Integer.toHexString(ch);

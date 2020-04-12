@@ -15,7 +15,9 @@ import org.bukkit.inventory.ItemStack;
 public interface IRecipe {
 
   ItemStack getResult();
-  void onCraft(Player player);
+  void onCraft(Player player, int amount);
   String getName();
+  String[] getDescription(Player player);
+  String getDisplayName(Player player);
 
 }

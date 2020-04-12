@@ -2,8 +2,10 @@ package com.gestankbratwurst.fruchtcore.util.holograms;
 
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Predicate;
 
+import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -15,13 +17,18 @@ import com.google.common.collect.Lists;
 public abstract class AbstractHologram {
 	
 	private static final double MAX_MOVE_DIST = 8 * 8;
-	
+
 	public AbstractHologram(Location baseLocation, Predicate<Player> playerFilter, AbstractHologramManager manager) {
+		this(baseLocation, playerFilter, manager, UUID.randomUUID());
+	}
+
+	public AbstractHologram(Location baseLocation, Predicate<Player> playerFilter, AbstractHologramManager manager, UUID uuid) {
 		this.lines = Lists.newArrayList();
 		this.manager = manager;
 		this.baseLocation = baseLocation;
 		this.playerFilter = playerFilter;
 		this.clickable = false;
+		this.holoID = uuid;
 	}
 	
 	protected final AbstractHologramManager manager;
@@ -29,6 +36,8 @@ public abstract class AbstractHologram {
 	protected final ArrayList<IHologramLine<?>> lines;
 	private Predicate<Player> playerFilter;
 	protected boolean clickable;
+	@Getter
+	private final UUID holoID;
 	
 	protected void registerClickableEntities() {
 		this.manager.setClickableIdentifier(this.getClickableEntityIds(), this);

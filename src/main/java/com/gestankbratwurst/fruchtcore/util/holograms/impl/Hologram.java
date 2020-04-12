@@ -5,6 +5,7 @@ import com.gestankbratwurst.fruchtcore.util.holograms.AbstractHologram;
 import com.gestankbratwurst.fruchtcore.util.holograms.AbstractHologramManager;
 import com.gestankbratwurst.fruchtcore.util.holograms.IHologramLine;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import net.minecraft.server.v1_15_R1.DamageSource;
@@ -25,8 +26,8 @@ import org.bukkit.util.Vector;
 public class Hologram extends AbstractHologram {
 
   public Hologram(final Location baseLocation, final Predicate<Player> playerFilter,
-      final AbstractHologramManager manager) {
-    super(baseLocation, playerFilter, manager);
+      final AbstractHologramManager manager, UUID uid) {
+    super(baseLocation, playerFilter, manager, uid);
     clickableEntitys = Sets.newHashSet();
   }
 

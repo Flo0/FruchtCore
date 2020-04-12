@@ -1,14 +1,17 @@
 package com.gestankbratwurst.fruchtcore.util.holograms;
 
+import com.gestankbratwurst.fruchtcore.util.common.UtilChunk;
+import com.gestankbratwurst.fruchtcore.util.events.PlayerReceiveChunkEvent;
+import com.gestankbratwurst.fruchtcore.util.events.PlayerUnloadsChunkEvent;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
-import com.gestankbratwurst.fruchtcore.util.common.UtilChunk;
-import com.gestankbratwurst.fruchtcore.util.events.PlayerReceiveChunkEvent;
-import com.gestankbratwurst.fruchtcore.util.events.PlayerUnloadsChunkEvent;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Predicate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -25,11 +28,12 @@ public abstract class AbstractHologramManager implements Listener {
 
   public AbstractHologramManager(final JavaPlugin host, final IHologramFactory factory) {
     this.factory = factory;
-    hologramViews = Maps.newHashMap();
-    entityIDMappings = Maps.newHashMap();
-    entityIDinverseMappings = Maps.newHashMap();
+    hologramIDMap = new Object2ObjectOpenHashMap<>();
+    hologramViews = new Object2ObjectOpenHashMap<>();
+    entityIDMappings = new Object2ObjectOpenHashMap<>();
+    entityIDinverseMappings = new Object2ObjectOpenHashMap<>();
     loadedHolograms = HashBasedTable.create();
-    movingHolograms = Sets.newHashSet();
+    movingHolograms = new ObjectOpenHashSet<>();
     Bukkit.getPluginManager().registerEvents(this, host);
     Bukkit.getOnlinePlayers().forEach(
         player -> hologramViews.put(player, new HologramView(player))); // Handle reloads
@@ -57,12 +61,17 @@ public abstract class AbstractHologramManager implements Listener {
   private final Map<Integer, AbstractHologram> entityIDMappings;
   private final Map<AbstractHologram, Set<Integer>> entityIDinverseMappings;
   private final Set<MovingHologram> movingHolograms;
+  private final Map<UUID, AbstractHologram> hologramIDMap;
 
   public MovingHologram createMovingHologram(final Location location, final Vector direction, final int ticksAllive) {
     final MovingHologram moving = new MovingHologram(createHologram(location), direction,
         ticksAllive);
     movingHolograms.add(moving);
     return moving;
+  }
+
+  public AbstractHologram getHologram(UUID holoID) {
+    return this.hologramIDMap.get(holoID);
   }
 
   protected void runOutMovingHologram(final MovingHologram moving) {
@@ -152,11 +161,16 @@ public abstract class AbstractHologramManager implements Listener {
     }
   }
 
-  public AbstractHologram createHologram(final Location location) {
-    return createHologram(location, (player) -> true);
+  public AbstractHologram createHologram(final Location location, UUID uid) {
+    return createHologram(location, (player) -> true, uid);
   }
 
-  public AbstractHologram createHologram(final Location location, final Predicate<Player> viewFilter) {
+  public AbstractHologram createHologram(final Location location) {
+    return createHologram(location, UUID.randomUUID());
+  }
+
+  public AbstractHologram createHologram(final Location location, final Predicate<Player> viewFilter, UUID holoID) {
+
     final World world = location.getWorld();
     final Long chunkID = UtilChunk.getChunkKey(location);
     final Map<Location, AbstractHologram> chunkHolograms;
@@ -166,7 +180,7 @@ public abstract class AbstractHologramManager implements Listener {
 
     chunkHolograms = loadedHolograms.get(world.getName(), chunkID);
 
-    final AbstractHologram hologram = factory.supplyHologram(location, viewFilter, this);
+    final AbstractHologram hologram = factory.supplyHologram(location, viewFilter, this, holoID);
 
     chunkHolograms.put(location, hologram);
 
@@ -179,6 +193,7 @@ public abstract class AbstractHologramManager implements Listener {
       }
     }
 
+    this.hologramIDMap.put(holoID, hologram);
     return hologram;
   }
 
@@ -203,6 +218,7 @@ public abstract class AbstractHologramManager implements Listener {
 //    if (chunkMap.isEmpty()) {
 //      loadedHolograms.remove(holoWorld.getName(), chunkID);
 //    }
+    this.hologramIDMap.remove(hologram.getHoloID());
   }
 
   public boolean isViewing(final Player player, final AbstractHologram hologram) {

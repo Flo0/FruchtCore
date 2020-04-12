@@ -13,8 +13,10 @@ import org.bukkit.entity.Player;
  */
 public interface IRecipeExtender {
 
-  void onCraft(Player player);
+  void onCraft(Player player, int amount);
   boolean canExecute(Player player);
   void onFailure(Player player);
+  String[] getDescription(Player player);
+  String getDisplayName(Player player);
 
 }

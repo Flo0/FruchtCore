@@ -25,8 +25,12 @@ public class ModelData {
     return new ModelData(modelParent, displayJson, elementsJson);
   }
 
-  public static ModelData common() {
+  public static ModelData defaultGenerated() {
     return ModelData.of("item/generated", null, null);
+  }
+
+  public static ModelData defaultHandheld() {
+    return ModelData.of("item/handheld", null, null);
   }
 
 }

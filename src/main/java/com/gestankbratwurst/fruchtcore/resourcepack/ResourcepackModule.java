@@ -1,6 +1,7 @@
 package com.gestankbratwurst.fruchtcore.resourcepack;
 
 import com.gestankbratwurst.fruchtcore.FruchtCore;
+import com.gestankbratwurst.fruchtcore.items.ItemLibrary;
 import com.gestankbratwurst.fruchtcore.resourcepack.distribution.ResourcepackListener;
 import com.gestankbratwurst.fruchtcore.resourcepack.distribution.ResourcepackManager;
 import com.gestankbratwurst.fruchtcore.resourcepack.packing.ResourcepackAssembler;
@@ -31,6 +32,10 @@ public class ResourcepackModule {
         .getCommandCompletions()
         .registerStaticCompletion("ModelItem",
             ImmutableList.copyOf(Arrays.stream(Model.values()).map(Enum::toString).collect(Collectors.toList())));
+    plugin.getCommandManager()
+        .getCommandCompletions()
+        .registerStaticCompletion("ItemLib",
+            ImmutableList.copyOf(Arrays.stream(ItemLibrary.values()).map(Enum::toString).collect(Collectors.toList())));
     resourcepackManager = new ResourcepackManager(plugin);
     Bukkit.getPluginManager().registerEvents(new ResourcepackListener(plugin, resourcepackManager), plugin);
   }

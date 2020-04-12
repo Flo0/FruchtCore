@@ -1,7 +1,12 @@
 package com.gestankbratwurst.fruchtcore.recipes;
 
 import com.gestankbratwurst.fruchtcore.FruchtCore;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.Map;
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -15,8 +20,12 @@ import org.bukkit.Bukkit;
 public class RecipeModule {
 
   public RecipeModule(FruchtCore plugin) {
-    Bukkit.getPluginManager().registerEvents(new RecipeListener(), plugin);
+    extensionmap = new Object2ObjectOpenHashMap<>();
+    Bukkit.getPluginManager().registerEvents(new RecipeListener(this), plugin);
   }
+
+  @Getter(AccessLevel.PACKAGE)
+  private final Map<NamespacedKey, IRecipeExtender> extensionmap;
 
   public void registerRecipe(IRecipe recipe) {
     if (recipe instanceof IShapedCraftingRecipe) {
@@ -29,15 +38,21 @@ public class RecipeModule {
   }
 
   private void registerShapedRecipe(IShapedCraftingRecipe shapedRecipe) {
-    Bukkit.addRecipe(CustomShapedRecipe.of(shapedRecipe));
+    CustomShapedRecipe recipe = CustomShapedRecipe.of(shapedRecipe);
+    extensionmap.put(recipe.getKey(), recipe);
+    Bukkit.addRecipe(recipe);
   }
 
   private void registerShapelessRecipe(IShapelessCraftingRecipe shapelessRecipe) {
-    Bukkit.addRecipe(CustomShapelessRecipe.of(shapelessRecipe));
+    CustomShapelessRecipe recipe = CustomShapelessRecipe.of(shapelessRecipe);
+    extensionmap.put(recipe.getKey(), recipe);
+    Bukkit.addRecipe(recipe);
   }
 
   private void registerFurnaceRecipe(IFurnaceRecipe furnaceRecipe) {
-    Bukkit.addRecipe(CustomFurnaceRecipe.of(furnaceRecipe));
+    CustomFurnaceRecipe recipe = CustomFurnaceRecipe.of(furnaceRecipe);
+    extensionmap.put(recipe.getKey(), recipe);
+    Bukkit.addRecipe(recipe);
   }
 
 }

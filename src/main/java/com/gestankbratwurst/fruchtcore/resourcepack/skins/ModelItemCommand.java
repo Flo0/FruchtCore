@@ -6,6 +6,7 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
+import com.gestankbratwurst.fruchtcore.items.ItemLibrary;
 import com.gestankbratwurst.fruchtcore.util.Msg;
 import org.bukkit.entity.Player;
 
@@ -25,6 +26,14 @@ public class ModelItemCommand extends BaseCommand {
   @Default
   public void onCommand(final Player sender) {
     Msg.send(sender, "Resourcepack", "Benutze '/modelitem get <ModelItem>' um ein ModelItem zu erhalten.");
+  }
+
+  @Subcommand("library")
+  @CommandCompletion("@ItemLib")
+  public void onLibCommand(final Player sender, final ItemLibrary model) {
+    sender.getInventory().addItem(model.getItem());
+    final String modelName = Msg.elem(model.toString());
+    Msg.send(sender, "Resourcepack", "Du hast ein LibraryItem erhalten: " + modelName);
   }
 
   @Subcommand("asitem")

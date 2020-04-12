@@ -27,22 +27,24 @@ public class CustomShapedRecipe extends ShapedRecipe implements IRecipeExtender 
     return recipe;
   }
 
+  private final IRecipe recipe;
+
   private CustomShapedRecipe(IShapedCraftingRecipe craftingRecipe) {
     super(NameSpaceFactory.provide(craftingRecipe.getName()), craftingRecipe.getResult());
     this.iShapedCraftingRecipe = craftingRecipe;
+    this.recipe = craftingRecipe;
   }
 
   private final IShapedCraftingRecipe iShapedCraftingRecipe;
 
   @Override
-  public void onCraft(Player player) {
-    iShapedCraftingRecipe.onCraft(player);
+  public void onCraft(Player player, int amount) {
+    iShapedCraftingRecipe.onCraft(player, amount);
   }
 
   @Override
   public boolean canExecute(Player player) {
     if (iShapedCraftingRecipe instanceof IPlayerConditional) {
-      System.out.println("Check");
       return ((IPlayerConditional) iShapedCraftingRecipe).canExecute(player);
     }
     return true;
@@ -51,6 +53,16 @@ public class CustomShapedRecipe extends ShapedRecipe implements IRecipeExtender 
   @Override
   public void onFailure(Player player) {
     ((IPlayerConditional) iShapedCraftingRecipe).onFailure(player);
+  }
+
+  @Override
+  public String[] getDescription(Player player) {
+    return recipe.getDescription(player);
+  }
+
+  @Override
+  public String getDisplayName(Player player) {
+    return recipe.getDisplayName(player);
   }
 
 }

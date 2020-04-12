@@ -24,16 +24,19 @@ public class CustomShapelessRecipe extends ShapelessRecipe implements IRecipeExt
     return recipe;
   }
 
+  private final IRecipe recipe;
+
   private CustomShapelessRecipe(IShapelessCraftingRecipe shapelessCraftingRecipe) {
     super(NameSpaceFactory.provide(shapelessCraftingRecipe.getName()), shapelessCraftingRecipe.getResult());
     this.iShapelessCraftingRecipe = shapelessCraftingRecipe;
+    this.recipe = shapelessCraftingRecipe;
   }
 
   private final IShapelessCraftingRecipe iShapelessCraftingRecipe;
 
   @Override
-  public void onCraft(Player player) {
-    iShapelessCraftingRecipe.onCraft(player);
+  public void onCraft(Player player, int amount) {
+    iShapelessCraftingRecipe.onCraft(player, amount);
   }
 
   @Override
@@ -44,6 +47,16 @@ public class CustomShapelessRecipe extends ShapelessRecipe implements IRecipeExt
   @Override
   public void onFailure(Player player) {
     ((IPlayerConditional) iShapelessCraftingRecipe).onFailure(player);
+  }
+
+  @Override
+  public String[] getDescription(Player player) {
+    return recipe.getDescription(player);
+  }
+
+  @Override
+  public String getDisplayName(Player player) {
+    return recipe.getDisplayName(player);
   }
 
 }
